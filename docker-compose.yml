@@ -8,10 +8,6 @@ services:
       - "8080:8080"
     tty: true
     environment:
-      - "DATABASE_HOST=db"
-      - "DATABASE_PORT=5432"
-      - "DATABASE_USER=postgres"
-      - "DATABASE_PASSWORD=mysecredpassword1234"
       - "DSN=root:password@postgres:5432/testdb?sslmode=disable"
     links:
       - db
