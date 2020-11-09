@@ -1,23 +1,23 @@
 version: '3'
 services:
   app:
-    build: .
+    build: docker/app
     volumes:
       - ./:/go/src/app
     ports:
       - "8080:8080"
     tty: true
     environment:
-      - "DSN=root:password@postgres:5432/testdb?sslmode=disable"
+      - "DSN=postgres://user1:password@database:5432/testdb?sslmode=disable"
     links:
-      - db
+      - db:database
 
   db:
-    image: postgres:10.1
+    build: docker/db
     ports:
       - "5432:5432"
-    tty: true
     environment:
-      - "POSTGRES_USER=root"
+      - "POSTGRES_USER=user1"
       - "POSTGRES_PASSWORD=password"
+      - "POSTGRES_DB=testdb"
 

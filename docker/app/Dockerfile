@@ -12,6 +12,7 @@ RUN apk add --no-cache \
 RUN go get github.com/pilu/fresh
 
 # Goのライブラリを追加する
+RUN go get github.com/lib/pq
 RUN go get github.com/go-gorp/gorp
 RUN go get github.com/labstack/echo
 

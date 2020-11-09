@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-gorp/gorp"
 	"github.com/labstack/echo"
+	_ "github.com/lib/pq"
 )
 
 type Comment struct {
@@ -27,13 +28,22 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello Go")
 	})
+	e.GET("/dbtest", func(c echo.Context) error {
+		r := TableTest()
+		return c.String(http.StatusOK, r)
+	})
 	e.Logger.Fatal(e.Start(":8080"))
 }
 
-func tableTest() {
+func TableTest() string {
 	dsn := os.Getenv("DSN")
-	var err error
-	db, _ := sql.Open("postgres", dsn)
+	fmt.Printf("DSN=%s\n", dsn)
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.PostgresDialect{}}
 	dbmap.AddTableWithName(Comment{}, "comments")
 	err = dbmap.CreateTablesIfNotExists()
@@ -41,5 +51,8 @@ func tableTest() {
 	err = dbmap.Insert(&Comment{Text: "こんにちは"})
 	if err != nil {
 		log.Fatal(err)
+		return fmt.Sprintf("Error :%v", err)
 	}
+
+	return "success"
 }
