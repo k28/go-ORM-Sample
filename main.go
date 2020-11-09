@@ -15,7 +15,7 @@ import (
 
 type Comment struct {
 	Id      int64     `db:"id,primarykey,autoincrement"`
-	Name    string    `db:"name,notnull,default:'名無し',size:200"`
+	Name    string    `db:"name,notnull,size:200"`
 	Text    string    `db:"text,notnull,size:400"`
 	Created time.Time `db:"created,notnull"`
 	Updated time.Time `db:"updated,notnull"`
@@ -48,11 +48,17 @@ func TableTest() string {
 	dbmap.AddTableWithName(Comment{}, "comments")
 	err = dbmap.CreateTablesIfNotExists()
 
-	err = dbmap.Insert(&Comment{Text: "こんにちは"})
+	newComment := Comment{Name: "Azusa", Text: "にゃ〜"}
+	//err = dbmap.Insert(&Comment{Name: "Alice", Text: "Hello"})
+	err = dbmap.Insert(&newComment)
 	if err != nil {
 		log.Fatal(err)
 		return fmt.Sprintf("Error :%v", err)
 	}
+
+	var comments []Comment
+	dbmap.Select(&comments, "SELECT * FROM comments")
+	fmt.Printf("select %v", comments)
 
 	return "success"
 }
